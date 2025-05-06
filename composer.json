@@ -1,0 +1,18 @@
+{
+    "name": "rekuital/bitrix-component-parameters",
+    "description": "Builder component parameters for bitrix",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Rekuital\\BitrixComponentParameters\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Arseny Kruglov"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    }
+}
