@@ -2,6 +2,15 @@
 
 namespace Rekuital\BitrixComponentParameters\Enum;
 
+use Rekuital\BitrixComponentParameters\Builder\GroupBuilder;
+use Rekuital\BitrixComponentParameters\Builder\Parameter\ParameterBuilder;
+use Rekuital\BitrixComponentParameters\Builder\Parameter\ParameterCheckboxBuilder;
+use Rekuital\BitrixComponentParameters\Builder\Parameter\ParameterColorpickerBuilder;
+use Rekuital\BitrixComponentParameters\Builder\Parameter\ParameterCustomBuilder;
+use Rekuital\BitrixComponentParameters\Builder\Parameter\ParameterFileBuilder;
+use Rekuital\BitrixComponentParameters\Builder\Parameter\ParameterListBuilder;
+use Rekuital\BitrixComponentParameters\Builder\Parameter\ParameterStringBuilder;
+
 enum ParameterTypeEnum: string
 {
     /** Выбор из списка значений */
@@ -29,4 +38,56 @@ enum ParameterTypeEnum: string
 
     /** Выбор цвета */
     case COLOR_PICKER = 'COLORPICKER';
+
+    public function createParameterBuilder(
+        GroupBuilder $groupBuilder,
+        string $groupCode,
+        string $code,
+        string $name,
+    ): ParameterBuilder {
+        return match ($this) {
+            self::LIST => new ParameterListBuilder(
+                builder: $groupBuilder,
+                code: $code,
+                groupCode: $groupCode,
+                type: $this,
+                name: $name
+            ),
+            self::STRING => new ParameterStringBuilder(
+                builder: $groupBuilder,
+                code: $code,
+                groupCode: $groupCode,
+                type: $this,
+                name: $name
+            ),
+            self::CHECKBOX => new ParameterCheckboxBuilder(
+                builder: $groupBuilder,
+                code: $code,
+                groupCode: $groupCode,
+                type: $this,
+                name: $name
+            ),
+            self::CUSTOM => new ParameterCustomBuilder(
+                builder: $groupBuilder,
+                code: $code,
+                groupCode: $groupCode,
+                type: $this,
+                name: $name
+            ),
+            self::FILE => new ParameterFileBuilder(
+                builder: $groupBuilder,
+                code: $code,
+                groupCode: $groupCode,
+                type: $this,
+                name: $name
+            ),
+            self::COLOR_PICKER => new ParameterColorpickerBuilder(
+                builder: $groupBuilder,
+                code: $code,
+                groupCode: $groupCode,
+                type: $this,
+                name: $name
+            ),
+        };
+    }
 }

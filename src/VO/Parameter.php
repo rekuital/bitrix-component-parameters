@@ -36,18 +36,25 @@ class Parameter
     /** Ширина поля в символах */
 	protected const COLS = 'COLS';
 
+    protected const FD_TARGET = 'FD_TARGET';
+	protected const FD_EXT = 'FD_EXT';
+	protected const FD_UPLOAD = 'FD_UPLOAD';
+	protected const FD_USE_MEDIA_LIB = 'FD_USE_MEDIALIB';
+	protected const FD_MEDIA_LIB_TYPES = 'FD_MEDIALIB_TYPES';
+
     public function __construct(
         protected ?string $groupCode,
         protected string $parameterCode,
         protected ?string $name,
         protected ?ParameterTypeEnum $type,
-        protected bool $isRefresh,
-        protected bool $isMultiple,
-        protected ?array $values,
-        protected bool $hasAdditionalValue,
-        protected ?int $size,
-        protected string|array|null $defaultValue,
-        protected ?int $widthField,
+        protected bool $isRefresh = false,
+        protected bool $isMultiple = false,
+        protected bool $hasAdditionalValue = false,
+        protected string|array|null $defaultValue = null,
+        protected ?int $widthField = null,
+        protected ?array $values = null,
+        protected ?int $size = null,
+        protected ?FileParams $fileParams = null,
     ) {
     }
 
@@ -69,6 +76,11 @@ class Parameter
             self::SIZE => $this->size,
             self::DEFAULT => $this->defaultValue,
             self::COLS => $this->widthField,
+            self::FD_TARGET => $this->fileParams?->getTarget()?->value,
+            self::FD_EXT => $this->fileParams?->getExtensionsAsString(),
+            self::FD_UPLOAD => $this->fileParams?->isUpload(),
+            self::FD_USE_MEDIA_LIB => $this->fileParams?->isMediaLib(),
+            self::FD_MEDIA_LIB_TYPES => $this->fileParams?->getMediaLibTypes(),
         ], fn ($item) => !is_null($item));
     }
 }

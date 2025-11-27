@@ -9,7 +9,8 @@
     },
     "authors": [
         {
-            "name": "Arseny Kruglov"
+            "name": "Arseny Kruglov",
+            "email": "rek.a.kruglov@gmail.com"
         }
     ],
     "require": {
