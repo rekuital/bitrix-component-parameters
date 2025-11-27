@@ -1,6 +1,7 @@
 {
     "name": "rekuital/bitrix-component-parameters",
     "description": "Builder component parameters for bitrix",
+    "license": "MIT",
     "type": "library",
     "autoload": {
         "psr-4": {
