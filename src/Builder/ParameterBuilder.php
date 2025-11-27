@@ -3,44 +3,14 @@
 namespace Rekuital\BitrixComponentParameters\Builder;
 
 use Rekuital\BitrixComponentParameters\Enum\ParameterTypeEnum;
+use Rekuital\BitrixComponentParameters\VO\Parameter;
 
 class ParameterBuilder
 {
-    /** Код группы, если нет - ставится ADDITIONAL_SETTINGS */
-    protected const PARENT = 'PARENT';
-
-    /** Название параметра на текущем языке */
-	protected const NAME = 'NAME';
-
-    /** Тип элемента управления, в котором будет устанавливаться параметр */
-	protected const TYPE = 'TYPE';
-
-    /** Перегружать настройки или нет после выбора (N/Y) */
-	protected const REFRESH = 'REFRESH';
-
-    /** Одиночное/множественное значение (N/Y) */
-	protected const MULTIPLE = 'MULTIPLE';
-
-    /** Массив значений для списка */
-	protected const VALUES = 'VALUES';
-
-    /** Показывать поле для значений, вводимых вручную (Y/N) */
-	protected const ADDITIONAL_VALUES = 'ADDITIONAL_VALUES';
-
-    /** Число строк для списка (если нужен не выпадающий список) */
-	protected const SIZE = 'SIZE';
-
-    /** Значение по умолчанию */
-	protected const DEFAULT = 'DEFAULT';
-
-    /** Ширина поля в символах */
-	protected const COLS = 'COLS';
-
     protected ?string $groupCode = null;
     protected string $parameterCode;
-
-    protected string $name;
-    protected ParameterTypeEnum $type;
+    protected ?string $name;
+    protected ?ParameterTypeEnum $type;
     protected bool $isRefresh = false;
     protected bool $isMultiple = false;
     protected ?array $values = null;
@@ -49,9 +19,11 @@ class ParameterBuilder
     protected string|array|null $defaultValue = null;
     protected ?int $widthField = null;
 
-    public function __construct(string $parameterCode)
+    public function __construct(string $code, ?ParameterTypeEnum $type = null, ?string $name = null)
     {
-        $this->parameterCode = $parameterCode;
+        $this->parameterCode = $code;
+        $this->type = $type;
+        $this->name = $name;
     }
 
     public function configureGroupCode(?string $groupCode): static
@@ -128,6 +100,23 @@ class ParameterBuilder
         $this->widthField = $value;
 
         return $this;
+    }
+
+    public function create(): Parameter
+    {
+        return new Parameter(
+            groupCode: $this->groupCode,
+            parameterCode: $this->parameterCode,
+            name: $this->name,
+            type: $this->type,
+            isRefresh: $this->isRefresh,
+            isMultiple: $this->isMultiple,
+            values: $this->values,
+            hasAdditionalValue: $this->hasAdditionalValue,
+            size: $this->size,
+            defaultValue: $this->defaultValue,
+            widthField: $this->widthField,
+        );
     }
 
 

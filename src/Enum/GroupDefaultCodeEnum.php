@@ -30,4 +30,9 @@ enum GroupDefaultCodeEnum: string
 
     /** Дополнительные настройки - Эта группа появляется, например, при указании параметра SET_TITLE */
     case ADDITIONAL_SETTINGS = 'ADDITIONAL_SETTINGS';
+
+    public static function isDefaultGroup(string|GroupDefaultCodeEnum $code): bool
+    {
+        return in_array($code, array_map(fn($case) => $case->value, self::cases()));
+    }
 }

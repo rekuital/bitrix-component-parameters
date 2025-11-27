@@ -2,50 +2,50 @@
 
 namespace Rekuital\BitrixComponentParameters\Builder;
 
-use Rekuital\BitrixComponentParameters\Enum\GroupDefaultCodeEnum;
-use Rekuital\BitrixComponentParameters\Exception\AlreadyGroupExistsException;
-use Rekuital\BitrixComponentParameters\Exception\SystemGroupCodeException;
-use Rekuital\BitrixComponentParameters\VO\Group;
 use Rekuital\BitrixComponentParameters\VO\GroupCollection;
+use Rekuital\BitrixComponentParameters\VO\ParameterCollection;
 
 class ComponentParamsBuilder
 {
-    protected GroupCollection $groupCollection;
+    /** @var GroupBuilder[] */
+    protected array $groupBuilders = [];
 
-    public function __construct()
+    /** @var ParameterBuilder[] */
+    protected array $parameterBuilders = [];
+
+    public function addGroupBuilder(GroupBuilder $groupBuilder): static
     {
-        $this->groupCollection = new GroupCollection();
-    }
-
-    /**
-     * @throws SystemGroupCodeException
-     * @throws AlreadyGroupExistsException
-     */
-    public function addGroup(Group $group): static
-    {
-        if ($this->isSystemGroup($group)) {
-            throw new SystemGroupCodeException($group->getCode());
-        }
-
-        foreach ($this->groupCollection as $item) {
-            if ($item->getCode() === $group->getCode()) {
-                throw new AlreadyGroupExistsException($group->getCode());
-            }
-        }
-
-        $this->groupCollection[] = $group;
+        $this->groupBuilders[] = $groupBuilder;
 
         return $this;
     }
 
-    protected function isSystemGroup(Group $group): bool
+    public function addParameterBuilder(ParameterBuilder $parameterBuilder): static
     {
-        foreach (GroupDefaultCodeEnum::cases() as $groupCode) {
-            if ($group->getCode() === $groupCode->value) {
-                return true;
+        $this->parameterBuilders[] = $parameterBuilder;
+
+        return $this;
+    }
+
+    public function create(): array
+    {
+        $groups = new GroupCollection(
+            array_values(array_filter(array_map(fn($groupBuilder) => $groupBuilder->create(), $this->groupBuilders)))
+        );
+
+        $parameters = new ParameterCollection();
+        foreach ($this->groupBuilders as $groupBuilder) {
+            foreach ($groupBuilder->getParameterBuilder() as $parameterBuilder) {
+                $parameters[] = $parameterBuilder->create();
             }
         }
+        foreach ($this->parameterBuilders as $parameterBuilder) {
+            $parameters[] = $parameterBuilder->create();
+        }
 
-        return false;
+        return [
+            'GROUPS' => $groups->toArray(),
+            'PARAMETERS' => $parameters->toArray(),
+        ];
     }
 }
