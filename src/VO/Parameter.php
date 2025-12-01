@@ -36,11 +36,29 @@ class Parameter
     /** Ширина поля в символах */
 	protected const COLS = 'COLS';
 
+    /** Что можно будет выбирать в параметры файлы, директории или и то и другое */
     protected const FD_TARGET = 'FD_TARGET';
+
+    /** Список допустимых расширений файлов для выбора из структуры сайта (через запятую) */
 	protected const FD_EXT = 'FD_EXT';
+
+    /** Разрешено ли использовать данные из структуры сайта */
 	protected const FD_UPLOAD = 'FD_UPLOAD';
+
+    /** Разрешено ли использовать данные из медиабиблиотеки */
 	protected const FD_USE_MEDIA_LIB = 'FD_USE_MEDIALIB';
+
+    /** Типы коллекций, которые будут доступны в медиабиблиотеки */
 	protected const FD_MEDIA_LIB_TYPES = 'FD_MEDIALIB_TYPES';
+
+    /** Файл с JS кодом ответственным за отображение кастомной опции */
+    protected const JS_FILE = 'JS_FILE';
+
+    /** Callback функция, которая будет вызвана после загрузки JS_FILE */
+    protected const JS_EVENT = 'JS_EVENT';
+
+    /** Дополнительные данные, передаваемые в JS_EVENT */
+    protected const JS_DATA = 'JS_DATA';
 
     public function __construct(
         protected ?string $groupCode,
@@ -55,6 +73,7 @@ class Parameter
         protected ?array $values = null,
         protected ?int $size = null,
         protected ?FileParams $fileParams = null,
+        protected ?CustomParams $customParams = null,
     ) {
     }
 
@@ -81,6 +100,9 @@ class Parameter
             self::FD_UPLOAD => $this->fileParams?->isUpload(),
             self::FD_USE_MEDIA_LIB => $this->fileParams?->isMediaLib(),
             self::FD_MEDIA_LIB_TYPES => $this->fileParams?->getMediaLibTypes(),
+            self::JS_FILE => $this->customParams?->getJsFile(),
+            self::JS_EVENT => $this->customParams?->getJsEvent(),
+            self::JS_DATA => $this->customParams?->getJsData(),
         ], fn ($item) => !is_null($item));
     }
 }
